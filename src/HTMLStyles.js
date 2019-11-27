@@ -69,7 +69,7 @@ export function _constructStyles ({ tagName, htmlAttribs, passProps, additionalS
  * @param {any} passProps set of props from the HTML component
  * @returns {object} react-native styles
  */
-export function computeTextStyles (element, passProps, ignoredStyles=[]) {
+export function computeTextStyles (element, passProps,) {
     let finalStyle = {};
 
     // Construct an array with the styles of each level of the text node, ie :
@@ -83,7 +83,7 @@ export function computeTextStyles (element, passProps, ignoredStyles=[]) {
     parentStyles.forEach((styles) => {
         Object.keys(styles).forEach((styleKey) => {
             const styleValue = styles[styleKey];
-            if (!finalStyle[styleKey] && !ignoredStyles.includes(styleKey)) {
+            if (!finalStyle[styleKey]) {
                 finalStyle[styleKey] = styleValue;
             }
         });
@@ -94,13 +94,18 @@ export function computeTextStyles (element, passProps, ignoredStyles=[]) {
     return { ...passProps.baseFontStyle, ...finalStyle };
 }
 
+function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+
 function _recursivelyComputeParentTextStyles (element, passProps, styles = []) {
     const { attribs, name } = element;
-    const { classesStyles, tagsStyles, defaultTextStyles } = passProps;
+    const { classesStyles, tagsStyles, defaultTextStyles, ignoredStyles } = passProps;
 
     // Construct every style for this node
-    const HTMLAttribsStyles = attribs && attribs.style ? cssStringToRNStyle(attribs.style, STYLESETS.TEXT, passProps) : {};
-    const classStyles = _getElementClassStyles(attribs, classesStyles);
+    let HTMLAttribsStyles = attribs && attribs.style ? cssStringToRNStyle(attribs.style, STYLESETS.TEXT, passProps) : {};
+    HTMLAttribsStyles = _objectWithoutProperties(HTMLAttribsStyles, ignoredStyles);
+    let classStyles = _getElementClassStyles(attribs, classesStyles);
+    classStyles = _objectWithoutProperties(classStyles, ignoredStyles);
     const userTagStyles = tagsStyles[name];
     const defaultTagStyles = defaultTextStyles[name];
 
