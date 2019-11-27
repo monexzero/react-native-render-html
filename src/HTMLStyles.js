@@ -69,7 +69,7 @@ export function _constructStyles ({ tagName, htmlAttribs, passProps, additionalS
  * @param {any} passProps set of props from the HTML component
  * @returns {object} react-native styles
  */
-export function computeTextStyles (element, passProps) {
+export function computeTextStyles (element, passProps, ignoredStyles=[]) {
     let finalStyle = {};
 
     // Construct an array with the styles of each level of the text node, ie :
@@ -83,7 +83,7 @@ export function computeTextStyles (element, passProps) {
     parentStyles.forEach((styles) => {
         Object.keys(styles).forEach((styleKey) => {
             const styleValue = styles[styleKey];
-            if (!finalStyle[styleKey]) {
+            if (!finalStyle[styleKey] && !ignoredStyles.includes(styleKey)) {
                 finalStyle[styleKey] = styleValue;
             }
         });

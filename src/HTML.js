@@ -464,9 +464,8 @@ export default class HTML extends PureComponent {
                           baseFontStyle,
                           emSize,
                           ptSize,
-                          ignoredStyles,
                           allowedStyles
-                      })}
+                      }, ignoredStyles)}
                 >
                     { data }
                 </Text> :
